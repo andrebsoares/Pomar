@@ -2,6 +2,11 @@
 O projeto foi desenvolvida em .Net Core e React
 Banco de dados utilizado foi o LocalDb com Migrations.
 
+Dependências:
+-> .Net Core 3.1 SDK (https://dotnet.microsoft.com/download)
+-> Yarn
+-> SQL Server
+
 Se não quiser executar os comandos de projeto em projeto criei alguns bats
 
 Configurar:
