@@ -16,7 +16,6 @@ Executar:
 -> Executar o startserver.bat para subir a API
 -> Executar startweb.bat para subir o Web
 
-
 Obs: Se optar subir no Vs Studio deve ser utilizado o VS 2019 ou o VS Code
 
 VS Studio (API de Pomar):
