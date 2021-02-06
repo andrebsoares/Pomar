@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Pomar.Data;
 using Pomar.Interfaces.Repositories;
 using Pomar.Interfaces.Services;
@@ -29,12 +31,13 @@ namespace Pomar
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                 builder =>
                                 {
-                                    builder.WithOrigins("https://localhost:5001",
-                                                        "http://localhost:3001",
-                                                        "http://localhost:3000")
-                                            .AllowAnyHeader();
+                                    builder.AllowAnyOrigin()
+                                           .AllowAnyMethod()
+                                           .AllowAnyHeader();
                                 });
             });
+
+
 
             services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             //services.AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -44,17 +47,38 @@ namespace Pomar
 
             services.AddScoped<DataContext, DataContext>();
 
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IEspecieService, EspecieService>();
             services.AddScoped<IArvoreService, ArvoreService>();
             services.AddScoped<IGrupoArvoreService, GrupoArvoreService>();
             services.AddScoped<IColheitaService, ColheitaService>();
             services.AddScoped<IColheitaArvoreService, ColheitaArvoreService>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IEspecieRepository, EspecieRepository>();
             services.AddScoped<IArvoreRepository, ArvoreRepository>();
             services.AddScoped<IGrupoArvoreRepository, GrupoArvoreRepository>();
             services.AddScoped<IColheitaRepository, ColheitaRepository>();
             services.AddScoped<IColheitaArvoreRepository, ColheitaArvoreRepository>();
+
+            var key = System.Text.Encoding.ASCII.GetBytes(Settings.Settings.Secret);
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -70,6 +94,7 @@ namespace Pomar
 
             app.UseCors(MyAllowSpecificOrigins);
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

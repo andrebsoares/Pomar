@@ -36,7 +36,7 @@ namespace Pomar.Repository
 
         public virtual async Task Remove(int id)
         {
-            _dbSet.Remove(await Get(id));
+            _dbSet.Remove(await _dbSet.FindAsync(id));
             await _data.SaveChangesAsync();
         }
 

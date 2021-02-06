@@ -10,8 +10,8 @@ using Pomar.Data;
 namespace Pomar.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20201007012756_scriptInicial")]
-    partial class scriptInicial
+    [Migration("20210114215330_InitialCreatePomar")]
+    partial class InitialCreatePomar
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -146,6 +146,38 @@ namespace Pomar.Migrations
                         .HasName("Pk_Grupoarvore");
 
                     b.ToTable("tb_grupoarvore");
+                });
+
+            modelBuilder.Entity("Pomar.Models.User", b =>
+                {
+                    b.Property<int>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("Codigo")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Cargo")
+                        .IsRequired()
+                        .HasColumnName("Cargo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Senha")
+                        .IsRequired()
+                        .HasColumnName("Senha")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnName("Usuario")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Codigo")
+                        .HasName("Pk_User");
+
+                    b.HasIndex("Usuario")
+                        .IsUnique();
+
+                    b.ToTable("tb_user");
                 });
 
             modelBuilder.Entity("Pomar.Models.Arvore", b =>

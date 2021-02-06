@@ -13,13 +13,26 @@ namespace Pomar.Data
         public DataContext()
         { }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<Arvore> Arvores { get; set; }
         public DbSet<Especie> Especies { get; set; }
         public DbSet<GrupoArvore> GrupoArvores { get; set; }
         public DbSet<Colheita> Colheitas { get; set; }
         public DbSet<ColheitaArvore> ColheitaArvores { get; set; }
 
-
+        private void ConfiguraUser(ModelBuilder contrutorModels)
+        {
+            contrutorModels.Entity<User>(x =>
+            {
+                x.ToTable("tb_user");
+                x.HasKey(c => c.Codigo).HasName("Pk_User");
+                x.Property(c => c.Codigo).HasColumnName("Codigo").ValueGeneratedOnAdd();
+                x.Property(c => c.Usuario).HasColumnName("Usuario");
+                x.HasIndex(c => c.Usuario).IsUnique();
+                x.Property(c => c.Senha).HasColumnName("Senha");
+                x.Property(c => c.Cargo).HasColumnName("Cargo");
+            });
+        }
         private void ConfiguraArvore(ModelBuilder contrutorModels)
         {
             contrutorModels.Entity<Arvore>(x =>
@@ -85,8 +98,9 @@ namespace Pomar.Data
         protected override void OnModelCreating(ModelBuilder contrutorModels)
         {
             contrutorModels.UseIdentityColumns();// ForSqlServerUseIdentityColumns();
-            contrutorModels.HasDefaultSchema("bdPomar");            
+            contrutorModels.HasDefaultSchema("bdPomar");
 
+            ConfiguraUser(contrutorModels);
             ConfiguraEspecie(contrutorModels);
             ConfiguraArvore(contrutorModels);
             ConfiguraGrupoArvore(contrutorModels);
@@ -95,7 +109,7 @@ namespace Pomar.Data
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder dbContextOptionsBuilder)
-        {           
+        {
             IConfigurationRoot config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")

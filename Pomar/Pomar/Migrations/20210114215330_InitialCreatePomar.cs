@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Pomar.Migrations
 {
-    public partial class scriptInicial : Migration
+    public partial class InitialCreatePomar : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,6 +52,22 @@ namespace Pomar.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("Pk_Grupoarvore", x => x.Codigo);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tb_user",
+                schema: "bdPomar",
+                columns: table => new
+                {
+                    Codigo = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Usuario = table.Column<string>(nullable: false),
+                    Senha = table.Column<string>(nullable: false),
+                    Cargo = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Pk_User", x => x.Codigo);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,12 +154,23 @@ namespace Pomar.Migrations
                 schema: "bdPomar",
                 table: "tb_colheitaarvore",
                 column: "ColheitaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tb_user_Usuario",
+                schema: "bdPomar",
+                table: "tb_user",
+                column: "Usuario",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "tb_colheitaarvore",
+                schema: "bdPomar");
+
+            migrationBuilder.DropTable(
+                name: "tb_user",
                 schema: "bdPomar");
 
             migrationBuilder.DropTable(

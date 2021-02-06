@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Pomar.Interfaces.Repositories;
 using Pomar.Interfaces.Services;
 using Pomar.Models;
@@ -10,7 +9,7 @@ namespace Pomar.Service
         private readonly IArvoreRepository _arvoreRepository;
         public ArvoreService(IArvoreRepository repository) : base(repository)
         {
-            _arvoreRepository = repository;            
-        }        
+            _arvoreRepository = repository;
+        }
     }
 }
